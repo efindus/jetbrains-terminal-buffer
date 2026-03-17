@@ -14,6 +14,8 @@ public class RingList<T> {
 
     @SuppressWarnings("unchecked")
     public RingList(int capacity, int initialSize, Supplier<T> tSupplier) {
+        if (capacity <= 0) throw new IllegalArgumentException("Capacity must be greater than zero");
+
         elements = (T[]) new Object[capacity];
         top = 0;
         size = initialSize;
@@ -36,12 +38,12 @@ public class RingList<T> {
         return elements[(top + index) % elements.length];
     }
 
-    private T _scroll(T replacement) {
+    private T _scroll(T newLast) {
         if (size == 0) return null;
 
         T element = elements[top];
         elements[top] = null;
-        elements[(top + size) % elements.length] = replacement;
+        elements[(top + size) % elements.length] = newLast;
 
         top = (top + 1) % elements.length;
         return element;
