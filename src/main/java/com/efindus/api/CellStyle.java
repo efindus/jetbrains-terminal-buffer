@@ -25,11 +25,11 @@ public class CellStyle {
     }
 
     public EnumSet<TerminalAttribute> getAttribs() {
-        return EnumSet.copyOf(attribs);
+        return attribs;
     }
 
     public void setAttribs(EnumSet<TerminalAttribute> attribs) {
-        this.attribs = EnumSet.copyOf(attribs);
+        this.attribs = attribs;
     }
 
     public CellStyle() {
