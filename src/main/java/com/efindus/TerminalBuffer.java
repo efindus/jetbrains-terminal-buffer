@@ -3,8 +3,6 @@ package com.efindus;
 import com.efindus.api.CellStyle;
 import com.efindus.utils.RingList;
 
-import java.util.*;
-
 class TerminalRow {
     char[] chars;
     CellStyle[] styles;
@@ -24,11 +22,21 @@ public class TerminalBuffer {
     private final RingList<TerminalRow> screen;
     private final RingList<TerminalRow> scrollback;
 
-    private CellStyle currentStyle;
+    private final CellStyle currentStyle;
+    int currentRow;
+    int currentCol;
 
     public TerminalBuffer(int width, int height, int scrollbackLines) {
         screen = new RingList<>(height, height, () -> new TerminalRow(width));
         scrollback = new RingList<>(scrollbackLines, () -> new TerminalRow(width));
         currentStyle = new CellStyle();
+        currentRow = 0;
+        currentCol = 0;
     }
+
+    public CellStyle getStyle() {
+        return currentStyle;
+    }
+
+
 }

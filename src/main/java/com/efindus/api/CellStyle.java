@@ -4,9 +4,33 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 public class CellStyle {
-    TerminalColor fgColor;
-    TerminalColor bgColor;
-    EnumSet<TerminalAttribute> attribs;
+    private TerminalColor fgColor;
+    private TerminalColor bgColor;
+    private EnumSet<TerminalAttribute> attribs;
+
+    public TerminalColor getFgColor() {
+        return fgColor;
+    }
+
+    public void setFgColor(TerminalColor fgColor) {
+        this.fgColor = fgColor;
+    }
+
+    public TerminalColor getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(TerminalColor bgColor) {
+        this.bgColor = bgColor;
+    }
+
+    public EnumSet<TerminalAttribute> getAttribs() {
+        return EnumSet.copyOf(attribs);
+    }
+
+    public void setAttribs(EnumSet<TerminalAttribute> attribs) {
+        this.attribs = EnumSet.copyOf(attribs);
+    }
 
     public CellStyle() {
         fgColor = TerminalColor.BRIGHT_WHITE;
