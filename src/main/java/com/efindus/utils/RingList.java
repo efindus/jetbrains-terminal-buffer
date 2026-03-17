@@ -6,6 +6,7 @@ public class RingList<T> {
     T[] elements;
     int top;
     int size;
+    int initialSize;
     Supplier<T> tSupplier;
 
     public RingList(int capacity, Supplier<T> tSupplier) {
@@ -18,7 +19,7 @@ public class RingList<T> {
 
         elements = (T[]) new Object[capacity];
         top = 0;
-        size = initialSize;
+        this.initialSize = size = initialSize;
         this.tSupplier = tSupplier;
 
         for (int i = 0; i < size; i++)
@@ -31,6 +32,17 @@ public class RingList<T> {
 
     public int capacity() {
         return elements.length;
+    }
+
+    public void clear() {
+        size = initialSize;
+        top = 0;
+
+        for (int i = 0; i < size; i++)
+            elements[i] = tSupplier.get();
+
+        for (int i = size; i < elements.length; i++)
+             elements[i] = null;
     }
 
     public T get(int index) {
