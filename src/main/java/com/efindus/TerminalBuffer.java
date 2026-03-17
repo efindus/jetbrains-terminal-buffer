@@ -26,6 +26,21 @@ public class TerminalBuffer {
     public CellStyle getStyle() {
         return currentStyle;
     }
+    public TerminalBuffer appendEmptyLine() {
+        scrollback.insert(screen.scroll());
+        return this;
+    }
+
+    public TerminalBuffer clearScreen() {
+        screen.clear();
+        return this;
+    }
+
+    public TerminalBuffer clear() {
+        screen.clear();
+        scrollback.clear();
+        return this;
+    }
 
     // cursor fluent API
     public int getX() {
