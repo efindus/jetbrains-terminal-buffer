@@ -1,6 +1,7 @@
 package com.efindus;
 
 import com.efindus.api.CellStyle;
+import com.efindus.api.cursor.Cursor;
 import com.efindus.utils.RingList;
 
 class TerminalRow {
@@ -23,20 +24,20 @@ public class TerminalBuffer {
     private final RingList<TerminalRow> scrollback;
 
     private final CellStyle currentStyle;
-    int currentRow;
-    int currentCol;
+    private final Cursor cursor;
 
     public TerminalBuffer(int width, int height, int scrollbackLines) {
         screen = new RingList<>(height, height, () -> new TerminalRow(width));
         scrollback = new RingList<>(scrollbackLines, () -> new TerminalRow(width));
         currentStyle = new CellStyle();
-        currentRow = 0;
-        currentCol = 0;
+        cursor = new Cursor(width, height);
     }
 
     public CellStyle getStyle() {
         return currentStyle;
     }
 
-
+    public Cursor getCursor() {
+        return cursor;
+    }
 }
