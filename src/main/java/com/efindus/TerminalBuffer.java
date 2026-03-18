@@ -3,6 +3,8 @@ package com.efindus;
 import com.efindus.api.CellStyle;
 import com.efindus.utils.RingList;
 
+record InsertData(char c, CellStyle s) {}
+
 @SuppressWarnings("UnusedReturnValue")
 public class TerminalBuffer {
     private final int screenWidth;
@@ -45,6 +47,34 @@ public class TerminalBuffer {
 
         return this;
     }
+
+    public TerminalBuffer insert(String content) {
+        return insert(content.toCharArray());
+    }
+
+    public TerminalBuffer insert(char[] content) {
+        if (content == null) throw new IllegalArgumentException("content must not be null");
+        if (content.length == 0) return this;
+
+        CellStyle cStyleCopy = new CellStyle(currentStyle);
+        RingList<InsertData> writeBuffer = new RingList<>(content.length, () -> null);
+        for (char c : content)
+            writeBuffer.insert(new InsertData(c, cStyleCopy));
+
+        while (writeBuffer.size() > 0) {
+            var x = writeBuffer.poll();
+
+            TerminalRow r = screen.get(cursor.getY());
+            if (r.getCharAt(getX()) != null)
+                writeBuffer.insert(new InsertData(r.getCharAt(getX()), r.getStyleAt(getX())));
+
+            r.write(x.c(), getX(), x.s());
+            advance();
+        }
+
+        return this;
+    }
+
     public TerminalBuffer fillLine(char character) {
         TerminalRow r = screen.get(cursor.getY());
         r.write(character, screenWidth, 0, currentStyle);
@@ -92,9 +122,9 @@ public class TerminalBuffer {
             throw new IndexOutOfBoundsException("x=" + x + " y=" + y);
 
         if (y >= 0)
-            return screen.get(y).getStyleAt(x);
+            return new CellStyle(screen.get(y).getStyleAt(x));
         else
-            return scrollback.get(scrollback.size() + y).getStyleAt(x);
+            return new CellStyle(scrollback.get(scrollback.size() + y).getStyleAt(x));
     }
 
     public String getLineAsString(int y) {
