@@ -3,11 +3,11 @@ package com.efindus.utils;
 import java.util.function.Supplier;
 
 public class RingList<T> {
-    T[] elements;
-    int top;
-    int size;
-    int initialSize;
-    Supplier<T> tSupplier;
+    private final T[] elements;
+    private int top;
+    private int size;
+    private final int initialSize;
+    private final Supplier<T> tSupplier;
 
     public RingList(int capacity, Supplier<T> tSupplier) {
         this(capacity, 0, tSupplier);
@@ -15,7 +15,9 @@ public class RingList<T> {
 
     @SuppressWarnings("unchecked")
     public RingList(int capacity, int initialSize, Supplier<T> tSupplier) {
-        if (capacity <= 0) throw new IllegalArgumentException("Capacity must be greater than zero");
+        if (capacity < 0) throw new IllegalArgumentException("Capacity must be >= 0");
+        if (initialSize < 0 || initialSize > capacity)
+            throw new IllegalArgumentException("initialSize must be between 0 and capacity");
 
         elements = (T[]) new Object[capacity];
         top = 0;
@@ -35,6 +37,8 @@ public class RingList<T> {
     }
 
     public void clear() {
+        if (capacity() == 0) return;
+
         size = initialSize;
         top = 0;
 
@@ -62,9 +66,13 @@ public class RingList<T> {
     }
 
     public T scroll() {
+        if (size == 0) return null;
         return _scroll(tSupplier.get());
     }
 
+    /**
+     * If capacity is 0 inserts are discarded
+     */
     public void insert(T element) {
         if (elements.length == size) {
             _scroll(element);
