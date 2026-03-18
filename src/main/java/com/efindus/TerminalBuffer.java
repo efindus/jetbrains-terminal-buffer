@@ -73,6 +73,65 @@ public class TerminalBuffer {
         return this;
     }
 
+    public int getScrollbackSize() {
+        return scrollback.size();
+    }
+
+    public Character getCharAt(int x, int y) {
+        if (x < 0 || x >= screenWidth || y < -scrollback.size() || y >= screenHeight)
+            throw new IndexOutOfBoundsException("x=" + x + " y=" + y);
+
+        if (y >= 0)
+            return screen.get(y).getCharAt(x);
+        else
+            return scrollback.get(scrollback.size() - y).getCharAt(x);
+    }
+
+    public CellStyle getStyleAt(int x, int y) {
+        if (x < 0 || x >= screenWidth || y < -scrollback.size() || y >= screenHeight)
+            throw new IndexOutOfBoundsException("x=" + x + " y=" + y);
+
+        if (y >= 0)
+            return screen.get(y).getStyleAt(x);
+        else
+            return scrollback.get(scrollback.size() + y).getStyleAt(x);
+    }
+
+    public String getLineAsString(int y) {
+        if (y < -scrollback.size() || y >= screenHeight)
+            throw new IndexOutOfBoundsException("y=" + y);
+
+        if (y >= 0)
+            return screen.get(y).asString();
+        else
+            return scrollback.get(scrollback.size() + y).asString();
+    }
+
+    public String getScreen() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < screenHeight; i++) {
+            screen.get(i).writeLineIntoStringBuilder(sb);
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public String getBuffer() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < scrollback.size(); i++) {
+            scrollback.get(i).writeLineIntoStringBuilder(sb);
+            sb.append("\n");
+        }
+
+        for (int i = 0; i < screen.size(); i++) {
+            screen.get(i).writeLineIntoStringBuilder(sb);
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
     // cursor fluent API
     public int getX() {
         return cursor.getX();
