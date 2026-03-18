@@ -34,6 +34,11 @@ class TerminalRow {
         return index;
     }
 
+    void write(char c, int writeAt, CellStyle s) {
+        chars[writeAt] = c;
+        styles[writeAt] = s;
+    }
+
     /**
      * @param c character to write
      * @param count number of characters to write
