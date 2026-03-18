@@ -81,4 +81,12 @@ public class RingList<T> {
             size++;
         }
     }
+
+    public T poll() {
+        if (size == 0) return null;
+        T element = elements[top];
+        top = (top + 1) % elements.length;
+        size--;
+        return element;
+    }
 }
