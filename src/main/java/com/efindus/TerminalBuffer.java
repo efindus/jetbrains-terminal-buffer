@@ -26,8 +26,39 @@ public class TerminalBuffer {
     public CellStyle getStyle() {
         return currentStyle;
     }
+
+    public TerminalBuffer write(String content) {
+        return write(content.toCharArray());
+    }
+
+    public TerminalBuffer write(char[] content) {
+        if (content == null) throw new IllegalArgumentException("content must not be null");
+        if (content.length == 0) return this;
+
+        int pos = 0;
+        while (pos < content.length) {
+            TerminalRow r = screen.get(cursor.getY());
+            int prevPos = pos;
+            pos = r.write(content, pos, cursor.getX(), currentStyle);
+            advance(pos - prevPos);
+        }
+
+        return this;
+    }
+    public TerminalBuffer fillLine(char character) {
+        TerminalRow r = screen.get(cursor.getY());
+        r.write(character, screenWidth, 0, currentStyle);
+
+        return this;
+    }
+
+    public TerminalBuffer clearLine() {
+        return fillLine('\0');
+    }
+
     public TerminalBuffer appendEmptyLine() {
         scrollback.insert(screen.scroll());
+        moveBy(0, -1); // keep cursor in the same spot
         return this;
     }
 
