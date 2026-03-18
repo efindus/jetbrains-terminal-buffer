@@ -44,12 +44,43 @@ class TerminalRow {
     int write(char c, int count, int writeAt, CellStyle ref) {
         CellStyle style = new CellStyle(ref);
         int index = 0;
-        for (int i = writeAt; i < chars.length; i++) {
+        for (int i = writeAt; i < chars.length && index < count; i++) {
             chars[i] = c;
             styles[i] = style;
             index++;
         }
 
         return index;
+    }
+
+    Character getCharAt(int index) {
+        if (chars[index] == '\0') return null;
+        return chars[index];
+    }
+
+    CellStyle getStyleAt(int index) {
+        if (chars[index] == '\0') return null;
+        return styles[index];
+    }
+
+    void writeLineIntoStringBuilder(StringBuilder sb) {
+        // trim line
+        int end = chars.length - 1;
+        while (end >= 0 && chars[end] == '\0') end--;
+
+        int start = 0;
+        while (start <= end && chars[start] == '\0') start++;
+
+        for (int i = start; i <= end; i++) {
+            if (chars[i] == '\0') sb.append(' ');
+            else sb.append(chars[i]);
+        }
+    }
+
+    String asString() {
+        StringBuilder sb = new StringBuilder();
+        writeLineIntoStringBuilder(sb);
+
+        return sb.toString();
     }
 }
